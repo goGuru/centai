@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include <time.h>
 
 #define POP_SIZE 2
