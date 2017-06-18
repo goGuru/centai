@@ -2,22 +2,23 @@
 #include <iomanip>
 #include <time.h>
 
-#define NR_OF_RUNS 1000
+namespace CentAI_N {
+
+/*Configuration should be configurable, defines might not be used in future versions*/
 #define POP_SIZE 20
 #define NR_OF_GENES_PER_IND 10
-#define RANDOM_MUTATION_MIN -0.01
-#define RANDOM_MUTATION_MAX 0.01
+#define RANDOM_MUTATION_MIN -0.1
+#define RANDOM_MUTATION_MAX 0.1
 #define SHOW_INDIVIDUAL_SCORE 0
 #define SHOW_POPULATION_SCORE 0
 
-float randfloat(float a, float b) {
-	float random = ((float)rand()) / (float)RAND_MAX;
-	float diff = b - a;
-	float r = random * diff;
-	return a + r;
-}
+	float randfloat(float a, float b) {
+		float random = ((float)rand()) / (float)RAND_MAX;
+		float diff = b - a;
+		float r = random * diff;
+		return a + r;
+	}
 
-namespace CentAI_N {
 	struct Generable {
 		virtual void gen() = 0;
 	};
@@ -118,17 +119,22 @@ namespace CentAI_N {
 		Pop m_pop;
 		Pop m_bestPop;
 		Ind m_bestInd;
+		int32_t m_nrOfRuns;
 
 		CAI_Interface * m_control;
 	public:
-		CentAI() {
+		CentAI() : m_nrOfRuns(1){
 			m_pop.gen();
 		};
 		~CentAI() {
 			delete m_control;
 		};
 
-		void setup(CAI_Interface * control) {
+		void setNrOfRuns(int32_t nrOfRuns) {
+			m_nrOfRuns = nrOfRuns;
+		}
+
+		void bind(CAI_Interface * control) {
 			m_control = control;
 		}
 
@@ -148,7 +154,7 @@ namespace CentAI_N {
 		}
 
 		void start() {
-			for (int nrruns = 0; nrruns < NR_OF_RUNS; nrruns++) {
+			for (int nrruns = 0; nrruns < m_nrOfRuns; nrruns++) {
 				this->run();
 			}
 
@@ -212,8 +218,9 @@ int main() {
 	TestClass testObject;
 
 	CentAI cai;
+	cai.setNrOfRuns(100);
 
-	cai.setup((CAI_Interface *)&testObject);
+	cai.bind((CAI_Interface *)&testObject);
 	cai.start();
 
 	int a; std::cin >> a;
