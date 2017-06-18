@@ -4,7 +4,7 @@
 
 namespace CentAI_N {
 
-/*Configuration should be configurable, defines might not be used in future versions*/
+/*Configuration should be dynamic, defines might not be used in future versions*/
 #define POP_SIZE 20
 #define NR_OF_GENES_PER_IND 10
 #define RANDOM_MUTATION_MIN -0.1
@@ -110,6 +110,7 @@ namespace CentAI_N {
 		}
 	}
 
+	/*Interface that shall be inherited by target application*/
 	struct CAI_Interface {
 		virtual float run(Ind &curind) = 0;
 	};
@@ -192,37 +193,3 @@ namespace CentAI_N {
 		}
 	};
 };
-
-using namespace CentAI_N;
-
-class TestClass : CAI_Interface{
-public:
-	TestClass() {
-
-	}
-
-	float CAI_Interface::run(Ind &curind) {
-		float score = 0.f;
-
-		for (float gene : curind.m_w) {
-			score += gene;
-		}
-
-		return score;
-	}
-};
-
-int main() {
-	srand(time(NULL));
-
-	TestClass testObject;
-
-	CentAI cai;
-	cai.setNrOfRuns(100);
-
-	cai.bind((CAI_Interface *)&testObject);
-	cai.start();
-
-	int a; std::cin >> a;
-	return 0;
-}
